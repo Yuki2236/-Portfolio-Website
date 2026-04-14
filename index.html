@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="YUKESH.Rk – Web Developer Fresher specializing in HTML, CSS, JavaScript. B.Tech AI & Data Science student at Adhi College of Engineering and Technology." />
+  <meta name="keywords" content="YUKESH, Web Developer, Fresher, HTML, CSS, JavaScript, Portfolio, Tamil Nadu" />
+  <meta name="author" content="YUKESH.Rk" />
+  <title>YUKESH.Rk | Web Developer Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ── CURSOR GLOW ── -->
+  <div class="cursor-glow" id="cursorGlow"></div>
+
+  <!-- ── PARTICLE CANVAS ── -->
+  <canvas id="particleCanvas"></canvas>
+
+  <!-- ══════════════════════════════════════════
+       AUTH MODAL (Login / Register)
+  ══════════════════════════════════════════ -->
+  <div class="auth-overlay" id="authOverlay" role="dialog" aria-modal="true" aria-label="Account">
+    <div class="auth-modal" id="authModal">
+      <!-- Close -->
+      <button class="auth-close" id="authClose" aria-label="Close">✕</button>
+
+      <!-- Logo -->
+      <div class="auth-logo">YK<span>.</span></div>
+
+      <!-- Tabs -->
+      <div class="auth-tabs" id="authTabs">
+        <button class="auth-tab active" id="tabLogin"  data-tab="login">Sign In</button>
+        <button class="auth-tab"        id="tabSignup" data-tab="signup">Create Account</button>
+      </div>
+
+      <!-- ── LOGIN PANEL ── -->
+      <div class="auth-panel" id="panelLogin">
+        <p class="auth-subtitle">Welcome back! Sign in to continue.</p>
+        <form id="loginForm" onsubmit="handleLogin(event)" novalidate>
+          <div class="auth-field">
+            <label for="loginEmail">Email Address</label>
+            <div class="field-wrap">
+              <span class="field-icon">✉️</span>
+              <input type="email" id="loginEmail" placeholder="you@example.com" required autocomplete="email" />
+            </div>
+          </div>
+          <div class="auth-field">
+            <label for="loginPassword">Password</label>
+            <div class="field-wrap">
+              <span class="field-icon">🔒</span>
+              <input type="password" id="loginPassword" placeholder="Enter your password" required autocomplete="current-password" />
+              <button type="button" class="toggle-pw" id="toggleLoginPw" aria-label="Show password">👁</button>
+            </div>
+          </div>
+          <p class="auth-error" id="loginError"></p>
+          <button type="submit" class="btn btn-primary btn-full auth-submit" id="loginSubmit">Sign In</button>
+        </form>
+        <p class="auth-switch">Don't have an account? <button type="button" onclick="switchTab('signup')">Create one →</button></p>
+      </div>
+
+      <!-- ── REGISTER PANEL ── -->
+      <div class="auth-panel hidden" id="panelSignup">
+        <p class="auth-subtitle">Join to save your preferences &amp; leave feedback.</p>
+        <form id="signupForm" onsubmit="handleSignup(event)" novalidate>
+          <div class="auth-field">
+            <label for="signupName">Full Name</label>
+            <div class="field-wrap">
+              <span class="field-icon">👤</span>
+              <input type="text" id="signupName" placeholder="Your full name" required autocomplete="name" />
+            </div>
+          </div>
+          <div class="auth-field">
+            <label for="signupEmail">Email Address</label>
+            <div class="field-wrap">
+              <span class="field-icon">✉️</span>
+              <input type="email" id="signupEmail" placeholder="you@example.com" required autocomplete="email" />
+            </div>
+          </div>
+          <div class="auth-field">
+            <label for="signupPassword">Password</label>
+            <div class="field-wrap">
+              <span class="field-icon">🔒</span>
+              <input type="password" id="signupPassword" placeholder="Min. 6 characters" required autocomplete="new-password" />
+              <button type="button" class="toggle-pw" id="toggleSignupPw" aria-label="Show password">👁</button>
+            </div>
+          </div>
+          <div class="auth-field">
+            <label for="signupConfirm">Confirm Password</label>
+            <div class="field-wrap">
+              <span class="field-icon">🔒</span>
+              <input type="password" id="signupConfirm" placeholder="Repeat password" required autocomplete="new-password" />
+            </div>
+          </div>
+          <p class="auth-error" id="signupError"></p>
+          <button type="submit" class="btn btn-primary btn-full auth-submit" id="signupSubmit">Create Account 🚀</button>
+        </form>
+        <p class="auth-switch">Already have an account? <button type="button" onclick="switchTab('login')">Sign in →</button></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       USER DASHBOARD PANEL (slide-in)
+  ══════════════════════════════════════════ -->
+  <div class="dash-overlay" id="dashOverlay"></div>
+  <aside class="user-dashboard" id="userDashboard" aria-label="User dashboard">
+    <button class="dash-close" id="dashClose" aria-label="Close dashboard">✕</button>
+    <div class="dash-avatar-wrap">
+      <div class="dash-avatar" id="dashAvatar"></div>
+      <div class="dash-user-info">
+        <h3 id="dashName">Your Name</h3>
+        <p  id="dashEmail">you@example.com</p>
+        <span class="dash-badge">Visitor</span>
+      </div>
+    </div>
+    <div class="dash-stats">
+      <div class="dash-stat">
+        <span class="ds-val" id="dashJoined">—</span>
+        <span class="ds-lbl">Joined</span>
+      </div>
+      <div class="dash-stat">
+        <span class="ds-val" id="dashVisits">0</span>
+        <span class="ds-lbl">Visits</span>
+      </div>
+    </div>
+    <div class="dash-section">
+      <h4>Quick Links</h4>
+      <nav class="dash-nav">
+        <a href="#about"     class="dash-link" onclick="closeDashboard()">👤 About</a>
+        <a href="#skills"    class="dash-link" onclick="closeDashboard()">⚡ Skills</a>
+        <a href="#projects"  class="dash-link" onclick="closeDashboard()">🗂 Projects</a>
+        <a href="#contact"   class="dash-link" onclick="closeDashboard()">✉️ Contact</a>
+      </nav>
+    </div>
+    <div class="dash-section">
+      <h4>Leave a Note for YUKESH</h4>
+      <form id="dashNoteForm" onsubmit="saveDashNote(event)">
+        <textarea id="dashNote" rows="3" placeholder="Write something nice…"></textarea>
+        <button type="submit" class="btn btn-primary btn-full" style="margin-top:10px;font-size:0.85rem;">Save Note</button>
+        <p class="dash-note-saved" id="dashNoteSaved">✅ Saved!</p>
+      </form>
+    </div>
+    <button class="btn dash-logout" id="dashLogout" onclick="handleLogout()">Sign Out</button>
+  </aside>
+
+  <!-- ──────────────────────────────────────────
+       NAVIGATION
+  ────────────────────────────────────────── -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <a href="#hero" class="nav-logo" id="navLogo">YK<span>.</span></a>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#about"        id="navAbout">About</a></li>
+        <li><a href="#skills"       id="navSkills">Skills</a></li>
+        <li><a href="#projects"     id="navProjects">Projects</a></li>
+        <li><a href="#education"    id="navEducation">Education</a></li>
+        <li><a href="#contact"      id="navContact">Contact</a></li>
+      </ul>
+      <a href="mailto:yyukesh211@gmail.com" class="btn btn-primary nav-cta" id="navCta">Hire Me</a>
+
+      <!-- ── AUTH / USER BUTTON ── -->
+      <!-- Shown when logged OUT -->
+      <button class="btn btn-outline nav-signin" id="navSignIn" onclick="openAuthModal('login')">
+        <span>👤</span> Sign In
+      </button>
+      <!-- Shown when logged IN -->
+      <div class="user-menu" id="userMenu" style="display:none">
+        <button class="user-avatar-btn" id="userAvatarBtn" aria-label="Open user menu" onclick="openDashboard()">
+          <span class="nav-avatar" id="navAvatar"></span>
+          <span class="nav-username" id="navUsername"></span>
+        </button>
+        <div class="user-dropdown" id="userDropdown">
+          <div class="ud-header">
+            <span class="ud-avatar" id="udAvatar"></span>
+            <div>
+              <strong id="udName"></strong>
+              <small id="udEmail"></small>
+            </div>
+          </div>
+          <a href="#" class="ud-item" onclick="openDashboard();return false;">📊 Dashboard</a>
+          <a href="#about"    class="ud-item" onclick="closeDropdown()">👤 About</a>
+          <a href="#projects" class="ud-item" onclick="closeDropdown()">🗂 Projects</a>
+          <a href="#contact"  class="ud-item" onclick="closeDropdown()">✉️ Contact</a>
+          <div class="ud-divider"></div>
+          <button class="ud-item ud-logout" onclick="handleLogout()">🚪 Sign Out</button>
+        </div>
+      </div>
+
+      <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ──────────────────────────────────────────
+       HERO SECTION
+  ────────────────────────────────────────── -->
+  <section class="hero" id="hero">
+    <div class="hero-content">
+      <div class="hero-badge" id="heroBadge">
+        <span class="badge-dot"></span> Open to Opportunities
+      </div>
+      <h1 class="hero-name" id="heroName">
+        Hi, I'm <span class="gradient-text">YUKESH.Rk</span>
+      </h1>
+      <div class="hero-title" id="heroTitle">
+        <span class="typed-text" id="typedText"></span><span class="cursor-blink">|</span>
+      </div>
+      <p class="hero-bio" id="heroBio">
+        A motivated B.Tech AI &amp; Data Science student with a passion for crafting
+        beautiful, responsive web experiences. Turning ideas into clean, functional code.
+      </p>
+      <div class="hero-actions" id="heroActions">
+        <a href="#projects" class="btn btn-primary" id="viewWork">View My Work</a>
+        <a href="#contact"  class="btn btn-outline" id="getInTouch">Get in Touch</a>
+      </div>
+      <div class="hero-stats" id="heroStats">
+        <div class="stat">
+          <span class="stat-value">3+</span>
+          <span class="stat-label">Projects</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-value">8.04</span>
+          <span class="stat-label">GPA</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-value">5+</span>
+          <span class="stat-label">Technologies</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual" id="heroVisual">
+      <div class="avatar-ring">
+        <div class="avatar-inner">
+          <img src="profile.png" alt="YUKESH.Rk profile" id="profileImg" />
+        </div>
+      </div>
+      <div class="floating-badge fb-html"  id="fbHtml">HTML5</div>
+      <div class="floating-badge fb-css"   id="fbCss">CSS3</div>
+      <div class="floating-badge fb-js"    id="fbJs">JS</div>
+      <div class="floating-badge fb-py"    id="fbPy">Python</div>
+    </div>
+    <div class="hero-scroll-hint" id="scrollHint">
+      <span>Scroll</span>
+      <div class="scroll-arrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────────────────────────────────────
+       ABOUT SECTION
+  ────────────────────────────────────────── -->
+  <section class="section" id="about">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Who I Am</span>
+        <h2 class="section-title">About <span class="gradient-text">Me</span></h2>
+      </div>
+      <div class="about-grid">
+        <div class="about-text" id="aboutText">
+          <p>
+            A motivated fresher pursuing a <strong>B.Tech in Artificial Intelligence &amp; Data Science</strong>
+            from Adhi College of Engineering and Technology, seeking an entry-level position as a
+            <strong>Web Developer</strong>.
+          </p>
+          <p>
+            Skilled in <strong>HTML, CSS,</strong> and <strong>JavaScript</strong> with basic knowledge
+            of Java, C, and Python. Eager to apply technical knowledge in real-world projects and grow
+            in a professional environment.
+          </p>
+          <div class="about-info-grid">
+            <div class="about-info-item" id="infoLocation">
+              <span class="info-icon">📍</span>
+              <div>
+                <span class="info-label">Location</span>
+                <span class="info-value">Hosur, Tamil Nadu, India</span>
+              </div>
+            </div>
+            <div class="about-info-item" id="infoEmail">
+              <span class="info-icon">✉️</span>
+              <div>
+                <span class="info-label">Email</span>
+                <span class="info-value">yyukesh211@gmail.com</span>
+              </div>
+            </div>
+            <div class="about-info-item" id="infoPhone">
+              <span class="info-icon">📞</span>
+              <div>
+                <span class="info-label">Phone</span>
+                <span class="info-value">+91 9566615939</span>
+              </div>
+            </div>
+            <div class="about-info-item" id="infoAvail">
+              <span class="info-icon">💼</span>
+              <div>
+                <span class="info-label">Status</span>
+                <span class="info-value" style="color:var(--accent-green)">Available for hire</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="strengths-card" id="strengthsCard">
+          <h3>Core Strengths</h3>
+          <ul class="strength-list">
+            <li id="s1"><span class="s-icon">⚡</span> Quick Learner</li>
+            <li id="s2"><span class="s-icon">🧩</span> Problem-Solving Skills</li>
+            <li id="s3"><span class="s-icon">🤝</span> Teamwork</li>
+            <li id="s4"><span class="s-icon">🔄</span> Adaptability</li>
+          </ul>
+          <div class="languages-block">
+            <h4>Languages Spoken</h4>
+            <div class="lang-tags">
+              <span class="lang-tag" id="langEn">🇬🇧 English</span>
+              <span class="lang-tag" id="langTa">🇮🇳 Tamil</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────────────────────────────────────
+       SKILLS SECTION
+  ────────────────────────────────────────── -->
+  <section class="section section-dark" id="skills">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">What I Know</span>
+        <h2 class="section-title">Technical <span class="gradient-text">Skills</span></h2>
+      </div>
+      <div class="skills-grid">
+
+        <!-- Frontend -->
+        <div class="skill-category" id="skillFrontend">
+          <div class="category-header">
+            <span class="cat-icon">🎨</span>
+            <h3>Frontend Development</h3>
+          </div>
+          <div class="skill-bar-list">
+            <div class="skill-bar-item">
+              <div class="skill-bar-meta">
+                <span>HTML5</span><span>Intermediate</span>
+              </div>
+              <div class="skill-bar-track">
+                <div class="skill-bar-fill" data-width="70" style="--bar-color:var(--accent-orange)"></div>
+              </div>
+            </div>
+            <div class="skill-bar-item">
+              <div class="skill-bar-meta">
+                <span>CSS3</span><span>Intermediate</span>
+              </div>
+              <div class="skill-bar-track">
+                <div class="skill-bar-fill" data-width="65" style="--bar-color:var(--accent-blue)"></div>
+              </div>
+            </div>
+            <div class="skill-bar-item">
+              <div class="skill-bar-meta">
+                <span>JavaScript</span><span>Basic–Intermediate</span>
+              </div>
+              <div class="skill-bar-track">
+                <div class="skill-bar-fill" data-width="55" style="--bar-color:var(--accent-yellow)"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Programming -->
+        <div class="skill-category" id="skillProgramming">
+          <div class="category-header">
+            <span class="cat-icon">💻</span>
+            <h3>Programming Languages</h3>
+          </div>
+          <div class="skill-bar-list">
+            <div class="skill-bar-item">
+              <div class="skill-bar-meta">
+                <span>Java</span><span>Basic</span>
+              </div>
+              <div class="skill-bar-track">
+                <div class="skill-bar-fill" data-width="35" style="--bar-color:var(--accent-red)"></div>
+              </div>
+            </div>
+            <div class="skill-bar-item">
+              <div class="skill-bar-meta">
+                <span>C</span><span>Basic</span>
+              </div>
+              <div class="skill-bar-track">
+                <div class="skill-bar-fill" data-width="35" style="--bar-color:var(--accent-purple)"></div>
+              </div>
+            </div>
+            <div class="skill-bar-item">
+              <div class="skill-bar-meta">
+                <span>Python</span><span>Basic</span>
+              </div>
+              <div class="skill-bar-track">
+                <div class="skill-bar-fill" data-width="40" style="--bar-color:var(--accent-green)"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tools -->
+        <div class="skill-category skill-tools" id="skillTools">
+          <div class="category-header">
+            <span class="cat-icon">🛠️</span>
+            <h3>Tools &amp; Workflow</h3>
+          </div>
+          <div class="tools-chips">
+            <span class="tool-chip" id="toolVscode">VS Code</span>
+            <span class="tool-chip" id="toolGit">Git</span>
+            <span class="tool-chip" id="toolGithub">GitHub</span>
+            <span class="tool-chip" id="toolChrome">Chrome DevTools</span>
+            <span class="tool-chip" id="toolResponsive">Responsive Design</span>
+            <span class="tool-chip" id="toolLocalStorage">Local Storage API</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────────────────────────────────────
+       PROJECTS SECTION
+  ────────────────────────────────────────── -->
+  <section class="section" id="projects">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">What I've Built</span>
+        <h2 class="section-title">My <span class="gradient-text">Projects</span></h2>
+      </div>
+      <div class="projects-grid">
+
+        <!-- Project 1 -->
+        <div class="project-card" id="projectPortfolio">
+          <div class="project-top">
+            <div class="project-icon">🌐</div>
+            <div class="project-tags">
+              <span>HTML</span><span>CSS</span><span>JS</span>
+            </div>
+          </div>
+          <h3 class="project-title">Personal Portfolio Website</h3>
+          <p class="project-desc">
+            A fully responsive portfolio website showcasing skills, projects, and contact information.
+            Designed for both mobile and desktop with clean, modern UI.
+          </p>
+          <ul class="project-features">
+            <li>Responsive design (mobile &amp; desktop)</li>
+            <li>Skills &amp; project showcase</li>
+            <li>Contact information integration</li>
+          </ul>
+          <div class="project-footer">
+            <div class="project-tech">
+              <span class="tech-dot" style="background:var(--accent-orange)"></span> HTML &nbsp;
+              <span class="tech-dot" style="background:var(--accent-blue)"></span> CSS &nbsp;
+              <span class="tech-dot" style="background:var(--accent-yellow)"></span> JS
+            </div>
+          </div>
+        </div>
+
+        <!-- Project 2 -->
+        <div class="project-card project-featured" id="projectTodo">
+          <div class="project-featured-badge">Featured</div>
+          <div class="project-top">
+            <div class="project-icon">✅</div>
+            <div class="project-tags">
+              <span>JavaScript</span><span>LocalStorage</span>
+            </div>
+          </div>
+          <h3 class="project-title">To-Do List Application</h3>
+          <p class="project-desc">
+            A fully functional task management app built with vanilla JavaScript.
+            Tasks persist across sessions using the browser's local storage API.
+          </p>
+          <ul class="project-features">
+            <li>Add &amp; delete tasks</li>
+            <li>Persistent storage via localStorage</li>
+            <li>Clean, intuitive task management UI</li>
+          </ul>
+          <div class="project-footer">
+            <div class="project-tech">
+              <span class="tech-dot" style="background:var(--accent-yellow)"></span> JavaScript &nbsp;
+              <span class="tech-dot" style="background:var(--accent-cyan)"></span> LocalStorage
+            </div>
+          </div>
+        </div>
+
+        <!-- Project 3 -->
+        <div class="project-card" id="projectCalc">
+          <div class="project-top">
+            <div class="project-icon">🔢</div>
+            <div class="project-tags">
+              <span>HTML</span><span>CSS</span><span>JS</span>
+            </div>
+          </div>
+          <h3 class="project-title">Calculator Application</h3>
+          <p class="project-desc">
+            A sleek, functional calculator handling all basic arithmetic operations
+            with a clean UI and smooth interaction built entirely from scratch.
+          </p>
+          <ul class="project-features">
+            <li>Addition, subtraction, multiplication, division</li>
+            <li>Clean button layout &amp; display</li>
+            <li>Built with pure HTML, CSS &amp; JS</li>
+          </ul>
+          <div class="project-footer">
+            <div class="project-tech">
+              <span class="tech-dot" style="background:var(--accent-orange)"></span> HTML &nbsp;
+              <span class="tech-dot" style="background:var(--accent-blue)"></span> CSS &nbsp;
+              <span class="tech-dot" style="background:var(--accent-yellow)"></span> JS
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────────────────────────────────────
+       EDUCATION SECTION
+  ────────────────────────────────────────── -->
+  <section class="section section-dark" id="education">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Academic Background</span>
+        <h2 class="section-title">Education &amp; <span class="gradient-text">Certifications</span></h2>
+      </div>
+      <div class="edu-timeline">
+        <div class="edu-card" id="eduCard">
+          <div class="edu-icon">🎓</div>
+          <div class="edu-body">
+            <div class="edu-meta">
+              <span class="edu-duration">2023 – 2027</span>
+              <span class="edu-gpa">GPA: <strong>8.04</strong></span>
+            </div>
+            <h3 class="edu-degree">B.Tech – Artificial Intelligence &amp; Data Science</h3>
+            <p class="edu-college">Adhi College of Engineering and Technology</p>
+            <p class="edu-location">📍 Chennai, near Walajabad, Tamil Nadu</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="certs-section" id="certsSection">
+        <h3 class="certs-title">Certifications</h3>
+        <div class="certs-grid">
+          <div class="cert-card" id="certWeb">
+            <span class="cert-icon">🏅</span>
+            <div>
+              <h4>Web Development Basics</h4>
+              <p>HTML, CSS &amp; JavaScript</p>
+            </div>
+          </div>
+          <div class="cert-card" id="certJava">
+            <span class="cert-icon">📜</span>
+            <div>
+              <h4>Java Programming Basics</h4>
+              <p>Core Java Fundamentals</p>
+            </div>
+          </div>
+          <div class="cert-card" id="certPy">
+            <span class="cert-icon">🐍</span>
+            <div>
+              <h4>Python Basics</h4>
+              <p>Introduction to Python Programming</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────────────────────────────────────
+       CONTACT SECTION
+  ────────────────────────────────────────── -->
+  <section class="section" id="contact">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Let's Connect</span>
+        <h2 class="section-title">Get In <span class="gradient-text">Touch</span></h2>
+      </div>
+      <div class="contact-grid">
+        <div class="contact-info" id="contactInfo">
+          <p class="contact-tagline">
+            I'm currently open to <strong>internship</strong> and <strong>entry-level</strong> opportunities.
+            Whether you have a project in mind or just want to say hi — my inbox is always open!
+          </p>
+          <div class="contact-items">
+            <a href="mailto:yyukesh211@gmail.com" class="contact-item" id="contactEmail">
+              <span class="c-icon">✉️</span>
+              <div>
+                <span class="c-label">Email</span>
+                <span class="c-value">yyukesh211@gmail.com</span>
+              </div>
+            </a>
+            <a href="tel:+919566615939" class="contact-item" id="contactPhone">
+              <span class="c-icon">📞</span>
+              <div>
+                <span class="c-label">Phone</span>
+                <span class="c-value">+91 9566615939</span>
+              </div>
+            </a>
+            <div class="contact-item" id="contactAddr">
+              <span class="c-icon">📍</span>
+              <div>
+                <span class="c-label">Address</span>
+                <span class="c-value">Kirshnaappa Complex, near Reddy's Briyani Hotel, ITI, Hosur, Tamil Nadu</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <form class="contact-form" id="contactForm" onsubmit="handleFormSubmit(event)">
+          <div class="form-group">
+            <label for="formName">Your Name</label>
+            <input type="text" id="formName" placeholder="John Doe" required />
+          </div>
+          <div class="form-group">
+            <label for="formEmail">Your Email</label>
+            <input type="email" id="formEmail" placeholder="john@example.com" required />
+          </div>
+          <div class="form-group">
+            <label for="formMsg">Message</label>
+            <textarea id="formMsg" rows="5" placeholder="Hello YUKESH, I'd like to discuss…" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary btn-full" id="formSubmit">Send Message 🚀</button>
+          <p class="form-success" id="formSuccess">✅ Message sent! I'll get back to you soon.</p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- ──────────────────────────────────────────
+       FOOTER
+  ────────────────────────────────────────── -->
+  <footer id="footer">
+    <div class="footer-inner">
+      <p class="footer-copy">
+        Designed &amp; Built by <span class="gradient-text">YUKESH.Rk</span> · 2024
+      </p>
+      <p class="footer-sub">B.Tech AI &amp; DS · Adhi College of Engineering · Hosur, Tamil Nadu</p>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+  <script src="auth.js"></script>
+</body>
+</html>
